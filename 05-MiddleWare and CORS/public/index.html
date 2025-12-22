@@ -15,8 +15,8 @@
   </div>
   <script>
     async function sendRequest() {
-        const a = document.getElementById('a')
-        const b = document.getElementById('b')
+        const a = document.getElementById('a').value;
+        const b = document.getElementById('b').value;
 
       const res = await axios.post("http://localhost:3000/sum",{
         a:a,b:b
