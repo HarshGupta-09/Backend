@@ -2,13 +2,14 @@ const express = require("express");
 // Imports
 const app = express();
 const jwt = require("jsonwebtoken")
-
+const cors = require("cors")
 // JWT
 const JWT_SECRET = "heydhoniCsk"
 
 // MiddleWares
-
+app.use(cors())
 app.use(express.json());
+// This middleware verifies wheather the user is logedin or not, if not the req end here only
 function authCheck(req, res, next) {
   const token = req.headers.token;
 
@@ -34,7 +35,7 @@ const users = [];
 // Routes
 
 app.get("/", (req, res) => {
-  res.send("Welcome User");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 app.post("/signup", (req, res) => {
@@ -86,7 +87,7 @@ app.post("/signin", (req, res) => {
 
 
 // Creating an authenticated End point , to get the users info like username and pass if the user send his/her token
-app.get("/me",(req,res)=>{
+app.get("/me",authCheck,(req,res)=>{
     const token = req.headers.token
     const userDetails = jwt.verify(token,JWT_SECRET) 
     const username = userDetails.username;
