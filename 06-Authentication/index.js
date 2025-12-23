@@ -9,7 +9,7 @@ app.use(express.json());
 // Variable to store the password and username
 
 const users = [];
-console.log(users);
+
 // Routes
 
 app.get("/", (req, res) => {
@@ -19,6 +19,12 @@ app.get("/", (req, res) => {
 app.post("/signup", (req, res) => {
   const password = req.body.password;
   const username = req.body.username;
+  if(users.find(elem=> elem.username === username)){
+    res.status(403).send({
+        message : "user already exist"
+    })
+    return;
+  }
 
   users.push({
     username,
@@ -49,6 +55,8 @@ app.post("/signin", (req, res) => {
   const user = users.find(elem => elem.username == username);
   if(user){
     const token = generateToken();
+    user.token = token;
+    // users.push(user);
     res.send({
         token
     })
@@ -62,6 +70,26 @@ app.post("/signin", (req, res) => {
 
 
 });
+
+
+// Creating an authenticated End point , to get the users info like username and pass if the user send his/her token
+app.get("/me",(req,res)=>{
+    const token = req.headers.token
+    const user = users.find(ele=> ele.token === token);
+    if(user){
+        res.send({
+            username : user.username
+        })
+        console.log(user)
+
+    }else {
+        res.status(401).send({
+            message : "Unauthorized"
+        })
+    }
+})
+
+
 
 app.listen(3000, () => {
   console.log("Server Running on PORT : 3000");
