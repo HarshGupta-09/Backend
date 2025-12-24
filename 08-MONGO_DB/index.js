@@ -21,7 +21,7 @@ function auth (req,res,next) {
     const response = jwt.verify(token , JWT_SecretKey);
 
     if(response){
-        req.userId = token.id;
+        req.userId = response.id;
         next();
 
     }else{
@@ -79,15 +79,30 @@ app.post("/signin",async (req,res)=>{
 
 })
 // Authenticated Route
-app.post("/todo",auth,(req,res)=>{ 
+app.post("/todo",auth, async (req,res)=>{ 
+    await TodoModel.create({
+        title : req.body.title,
+        
+        userId : req.userId
+    })
+    res.json({
+        userId : req.userId,
+        Message : 'Posted succesfully',
+    })
 
-    const token = req
+
 
 
 })
 // Authenticated Route
-app.get("/todos",auth,(req,res)=>{
-
+app.get("/todos",auth,async(req,res)=>{
+    
+    const response = await  TodoModel.findOne({
+        userId : req.userId
+    })
+    res.json({
+        response
+    })
 })
 
 
