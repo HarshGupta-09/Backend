@@ -1,5 +1,6 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt");
 
 const mongoose = require('mongoose')
 const app = express();
@@ -39,9 +40,12 @@ app.post("/signup",async (req,res)=>{
     const password = req.body.password;
     const email = req.body.email;
 
+    // Hashing the password
+    const hashPassword =  await bcrypt.hash(password,10);
+console.log(hashPassword)
     await UserModel.create({ // to create a new document in db 'users' collection
         email : email,
-        password : password,
+        password : hashPassword,
         name : name
 
     });
@@ -57,9 +61,13 @@ app.post("/signin",async (req,res)=>{
     const email = req.body.email;
 
     const response = await UserModel.findOne({
-        email : email, password : password
+        email : email,
     })
-    if(response){
+    // Comparing the user given pass with hash password stored in the db
+    const passwordMatch =   bcrypt.compare(password,response.password)
+
+
+    if(response && passwordMatch){
         const token = jwt.sign({
             id : response._id.toString()
         },JWT_SecretKey) 
@@ -95,15 +103,21 @@ app.post("/todo",auth, async (req,res)=>{
 
 })
 // Authenticated Route
-app.get("/todos",auth,async(req,res)=>{
-    
-    const response = await  TodoModel.findOne({
-        userId : req.userId
-    })
+app.get("/todo", auth, async function (req, res) {
+    // Get the userId from the request object
+    const userId = req.userId;
+
+    // Find all the todos with the given userId
+    const todos = await TodoModel.find({
+        userId,
+    });
+
+    // Send the todos to the client
     res.json({
-        response
-    })
-})
+        todos,
+    });
+});
+
 
 
 app.listen(3000,()=>{
