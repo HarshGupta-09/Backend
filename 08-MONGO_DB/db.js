@@ -5,10 +5,12 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.ObjectId;
 
+
+
 // Structure of user ki user document k paas kya kya fileds hogi 
 // ki findally data kaise dikhega database / collcetin mai
 const User = new Schema ({
-    email : String,
+    email: {type: String, unique: true},
     password : String,
     name : String
 });
@@ -26,6 +28,7 @@ const Todo = new Schema({
 // UserModel ab apan ko methods dega to interact with the Db compass kha eventually apna database ya collection hai CRUD perform krne k lliye 
 
 const UserModel = mongoose.model('users', User);
+// This  is where i want to put data 
 const TodoModel = mongoose.model('todos', Todo);
 
 module.exports = {
