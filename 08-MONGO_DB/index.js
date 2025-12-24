@@ -36,7 +36,8 @@ function auth (req,res,next) {
 // Routes
 
 app.post("/signup",async (req,res)=>{
-    const name = req.body.name;
+    try {
+        const name = req.body.name;
     const password = req.body.password;
     const email = req.body.email;
 
@@ -52,6 +53,12 @@ console.log(hashPassword)
     res.json({
         message : "You are singed Up"
     })
+    } catch (e) {
+        res.status(403).json({
+            message : "Error whiile signing up"
+        })
+    }
+    
 
 })
 
