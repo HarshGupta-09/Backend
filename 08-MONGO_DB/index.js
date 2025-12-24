@@ -1,7 +1,7 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
-
+const { z } = require("zod");
 const mongoose = require('mongoose')
 const app = express();
 
@@ -35,32 +35,51 @@ function auth (req,res,next) {
 
 // Routes
 
-app.post("/signup",async (req,res)=>{
+
+
+const signupSchema = z.object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email"),
+    password: z.string().min(6, "Password must be at least 6 characters")
+});
+
+app.post("/signup", async (req, res) => {
     try {
+        // Zod validation
+        const parsedData = signupSchema.safeParse(req.body);
+
+        if (!parsedData.success) {
+            return res.status(400).json({
+                message: "Invalid input",
+                errors: parsedData.error.errors
+            });
+        }
+
         const name = req.body.name;
-    const password = req.body.password;
-    const email = req.body.email;
+        const password = req.body.password;
+        const email = req.body.email;
 
-    // Hashing the password
-    const hashPassword =  await bcrypt.hash(password,10);
-console.log(hashPassword)
-    await UserModel.create({ // to create a new document in db 'users' collection
-        email : email,
-        password : hashPassword,
-        name : name
+        // Hashing the password
+        const hashPassword = await bcrypt.hash(password, 10);
+        console.log(hashPassword);
 
-    });
-    res.json({
-        message : "You are singed Up"
-    })
+        await UserModel.create({ // to create a new document in db 'users' collection
+            email: email,
+            password: hashPassword,
+            name: name
+        });
+
+        res.json({
+            message: "You are singed Up"
+        });
+
     } catch (e) {
         res.status(403).json({
-            message : "Error whiile signing up"
-        })
+            message: "Error whiile signing up"
+        });
     }
-    
+});
 
-})
 
 app.post("/signin",async (req,res)=>{
        
