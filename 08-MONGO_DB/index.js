@@ -24,5 +24,5 @@ app.get("/todos",(req,res)=>{
 
 
 app.listen(3000,()=>{
-    console.log("Server Runnign on PORt 3000")
+    console.log("Server Running on PORt 3000")
 })
