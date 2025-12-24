@@ -15,6 +15,23 @@ mongoose.connect("mongodb+srv://harshgupta82003_db_user:lwvNVO8ejjw5U4H0@cluster
 // Middlewares
 app.use(express.json())
 
+function auth (req,res,next) {
+    const token = req.headers.authorization;
+
+    const response = jwt.verify(token , JWT_SecretKey);
+
+    if(response){
+        req.userId = token.id;
+        next();
+
+    }else{
+        res.status(403).json({
+            message : "invalid username or pass"
+        })
+    }
+}
+
+
 // Routes
 
 app.post("/signup",async (req,res)=>{
@@ -62,11 +79,14 @@ app.post("/signin",async (req,res)=>{
 
 })
 // Authenticated Route
-app.post("/todo",(req,res)=>{ 
+app.post("/todo",auth,(req,res)=>{ 
+
+    const token = req
+
 
 })
 // Authenticated Route
-app.get("/todos",(req,res)=>{
+app.get("/todos",auth,(req,res)=>{
 
 })
 

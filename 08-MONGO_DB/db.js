@@ -32,6 +32,9 @@ const UserModel = mongoose.model('users', User);
 const TodoModel = mongoose.model('todos', Todo);
 
 module.exports = {
+    // users collection mera har user store krega mtlab ki har user k creds ki ye user hai with id and pass
     UserModel,
+    // and jo todos collection hai vo har particular user ka todo store krega
+    
     TodoModel,
 }
