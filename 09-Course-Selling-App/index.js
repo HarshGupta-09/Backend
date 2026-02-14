@@ -12,6 +12,8 @@ app.get("/",(req,res)=>{
 
 app.use("/user",userRouter)
 app.use("/courses",coursesRoutes)
+app.use("/admin",adminRoutes)
+
 
 
 

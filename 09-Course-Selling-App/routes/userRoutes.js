@@ -3,8 +3,7 @@ const userRouter = express.Router()
 
 
 userRouter.post("/signup" , (req,res)=>{
-    const password = req.password;
-    const email = req.email;
+  
 
 })
 
