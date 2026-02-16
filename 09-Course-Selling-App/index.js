@@ -2,7 +2,10 @@
 const express = require("express")
 const app = express();
 const { userRouter } = require('./routes/userRoutes');
+const { adminRoutes } = require('./routes/adminRoutes');
 const{ coursesRoutes } = require("./routes/coursesRoutes");
+
+
 
 app.get("/",(req,res)=>{
     res.send("Hii there!!")

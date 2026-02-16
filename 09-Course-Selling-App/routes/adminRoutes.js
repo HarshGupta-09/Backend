@@ -1,6 +1,6 @@
 const express = require("express")
 const adminRoutes = express.Router()
-
+const { adminModel } = require("../db")
 
 adminRoutes.post("/signup" , (req,res)=>{
 
