@@ -1,6 +1,7 @@
 const express = require("express")
 const userRouter = express.Router()
-
+import { z } from 'zod'
+import bcrypt from 'bcrypt';
 
 userRouter.post("/signup" , (req,res)=>{
   
