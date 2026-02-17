@@ -8,7 +8,7 @@ const ObjectId = mongoose.ObjectId;
 
 
 // Structure of user ki user document k paas kya kya fileds hogi 
-// ki findally data kaise dikhega database / collcetin mai
+// ki finally data kaise dikhega database / collcetin mai
 const User = new Schema ({
     email: {type: String, unique: true},
     password : String,

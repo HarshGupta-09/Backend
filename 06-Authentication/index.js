@@ -52,7 +52,7 @@ app.post("/signup", (req, res) => {
 
 // }
 
-app.post("/signin", (req, res) => {
+app.post("/signin", (req, res) => { // Login
   const password = req.body.password;
   const username = req.body.username;
 
