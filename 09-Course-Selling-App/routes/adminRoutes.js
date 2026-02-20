@@ -107,16 +107,59 @@ adminRoutes.post('/signin',async(req,res)=>{
     }
 })
 
-adminRoutes.post("/course",auth,(req,res)=>{
+adminRoutes.post("/course",auth, async (req,res)=>{
     // To add a course
+    const adminId = req.userId;
+    const { title , description , imageUrl , price } = req.body ;
+
+    const course = await courseModel.create({
+        title : title,
+        description : description,
+        imageUrl : imageUrl,
+        price : price , 
+        creatorId : adminId 
+    })
+    res.json({
+        message : "course created",
+        courseId : course._id
+    })
+
 })
 
-adminRoutes.put("/course",auth,(req,res)=>{ 
+adminRoutes.put("/course",auth, async (req,res)=>{ 
     // To update  any course
+  const adminId = req.userId;
+
+    const { title, description, imageUrl, price, courseId } = req.body;
+
+    // creating a web3 saas in 6 hours
+    const course = await courseModel.updateOne({
+        _id: courseId, 
+        creatorId: adminId 
+    }, {
+        title: title, 
+        description: description, 
+        imageUrl: imageUrl, 
+        price: price
+    })
+
+    res.json({
+        message: "Course updated",
+        courseId: course._id
+    })
 })
 
-adminRoutes.get("/course/bulk",auth,(req,res)=>{
+adminRoutes.get("/course/bulk",auth,async (req,res)=>{
     // Give me all the course that i have created
+    const adminId = req.userId;
+    
+    const courses = await courseModel.find({
+        creatorId : adminId
+    })
+    res.json({
+        message : "Course Updated",
+        courses
+    })
 })
 
 module.exports = {
