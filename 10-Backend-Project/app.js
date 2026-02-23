@@ -17,16 +17,24 @@ app.get('/',(req,res)=>{
 
 app.post('/register',async (req,res)=>{
   const {username , name , email , age , password} = req.body;
+  
    let user = await userModel.findOne({email:email})
    if(user){
- return    res.status(401).json({
+ return    res.status(400).json({
       message : "user with this email already exist"
     })
    }
-   bcrypt.hash(password,10)
+  const hashPassword =  await bcrypt.hash(password,10)
+ 
 
 
-  userModel.create({
+  await   userModel.create({
+    email : email,
+    password : hashPassword,
+    username : username,
+    age : age,
+    name : name,
+  
 
     
   })
