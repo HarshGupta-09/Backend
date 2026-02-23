@@ -62,13 +62,20 @@ app.post('/login',async (req,res)=>{
 return  res.status(401).json({
   mesage : "invalid password"
 })
+  }else {
+    res.send("logged in")
   }
  
-  let token = jwt.sign({
-    email : email, userId : user._id
-  },"SUPER_SECRET-KEY")
-  res.cookie("token",token)
-  res.send("logged In")
+  // let token = jwt.sign({
+  //   email : email, userId : user._id
+  // },"SUPER_SECRET-KEY")
+  // res.cookie("token",token)
+  // res.send("logged In")
+})
+
+app.get("/logout",(req,res)=>{
+  res.cookie("token","");
+  res.redirect("/login")
 })
 
 
