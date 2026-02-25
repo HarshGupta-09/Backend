@@ -13,7 +13,8 @@ const userSchema =   mongoose.Schema({
     name : String,
     age : Number , 
     email : String , 
-    password : String
+    password : String,
+    posts : []
 })
 
 const userModel = mongoose.model('user',userSchema)

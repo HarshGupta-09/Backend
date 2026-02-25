@@ -44,7 +44,7 @@ app.post('/register',async (req,res)=>{
     email : email, userId : user._id
   },"SUPER_SECRET-KEY")
   res.cookie("token",token)
-  res.send("registered")
+  res.redirect("/profile")
 })
 
 app.post('/login', async (req,res)=>{
@@ -70,29 +70,45 @@ app.post('/login', async (req,res)=>{
   }, "SUPER_SECRET-KEY");
 
   res.cookie("token", token);
-  res.send("logged in");
+  res.redirect("/profile");
 });
 
 app.get("/logout",(req,res)=>{
   res.cookie("token","");
   res.redirect("/login")
 })
-app.get("/profile",isLoggedIn,(req,res)=>{
- 
-res.json({
-  message : "profile route [protected route]"
-})
+
+app.get("/profile",isLoggedIn, async (req,res)=>{
+  
+ let user = await userModel.findOne({email:req.user.email})
+
+  res.render("profile",{user})
+
 })
 
+app.get("/post",isLoggedIn, async (req,res)=>{
+ let user = await userModel.findOne({email:req.user.email})
+postModel.create({
+  user : user._id,
+  content : req.body.content,
+
+})
+  
+
+})
 function isLoggedIn(req,res,next){
   if(!req.cookies.token){
-res.send("user must be login")
-
-  }else{
-   let data =  jwt.verify(req.cookies.token,'SUPER_SECRET-KEY')
-    req.user = data;
+  
+    return res.status(401).redirect("/login");
   }
- next()
+
+  try {
+    let data = jwt.verify(req.cookies.token,'SUPER_SECRET-KEY');
+    req.user = data;
+    next();
+  } catch(err){
+    return res.status(401).send("Invalid token");
+  }
 }
 
 app.listen(3000,()=>{
