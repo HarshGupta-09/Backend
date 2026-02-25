@@ -47,39 +47,53 @@ app.post('/register',async (req,res)=>{
   res.send("registered")
 })
 
-app.post('/login',async (req,res)=>{
-  const { email , password} = req.body;
+app.post('/login', async (req,res)=>{
+  const { email , password } = req.body;
 
-  const user = await userModel.findOne({email})
+  const user = await userModel.findOne({email});
   if(!user){
     return res.status(404).json({
-      message : "user not found with this email"
-    })
+      message : "user not found"
+    });
   }
-  
-  let ismatch = bcrypt.compare(password,user.password)
+
+  let ismatch = await bcrypt.compare(password, user.password);
   if(!ismatch){
-return  res.status(401).json({
-  mesage : "invalid password"
-})
-  }else {
-    res.send("logged in")
+    return res.status(401).json({
+      message : "invalid password"
+    });
   }
- 
-  // let token = jwt.sign({
-  //   email : email, userId : user._id
-  // },"SUPER_SECRET-KEY")
-  // res.cookie("token",token)
-  // res.send("logged In")
-})
+
+  let token = jwt.sign({
+    email : user.email,
+    userId : user._id
+  }, "SUPER_SECRET-KEY");
+
+  res.cookie("token", token);
+  res.send("logged in");
+});
 
 app.get("/logout",(req,res)=>{
   res.cookie("token","");
   res.redirect("/login")
 })
+app.get("/profile",isLoggedIn,(req,res)=>{
+ 
+res.json({
+  message : "profile route [protected route]"
+})
+})
 
+function isLoggedIn(req,res,next){
+  if(!req.cookies.token){
+res.send("user must be login")
 
-
+  }else{
+   let data =  jwt.verify(req.cookies.token,'SUPER_SECRET-KEY')
+    req.user = data;
+  }
+ next()
+}
 
 app.listen(3000,()=>{
     console.log("server running")
