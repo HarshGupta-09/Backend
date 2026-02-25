@@ -14,7 +14,10 @@ const userSchema =   mongoose.Schema({
     age : Number , 
     email : String , 
     password : String,
-    posts : []
+  posts: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "post"
+}]
 })
 
 const userModel = mongoose.model('user',userSchema)

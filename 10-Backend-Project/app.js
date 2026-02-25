@@ -80,19 +80,22 @@ app.get("/logout",(req,res)=>{
 
 app.get("/profile",isLoggedIn, async (req,res)=>{
   
- let user = await userModel.findOne({email:req.user.email})
+ let user = await userModel.findOne({email:req.user.email}).populate('posts')
 
   res.render("profile",{user})
 
 })
 
-app.get("/post",isLoggedIn, async (req,res)=>{
+app.post("/post",isLoggedIn, async (req,res)=>{
  let user = await userModel.findOne({email:req.user.email})
-postModel.create({
+let post = await postModel.create({
   user : user._id,
   content : req.body.content,
 
 })
+user.posts.push(post._id)
+await user.save();
+res.redirect('/profile')
   
 
 })
