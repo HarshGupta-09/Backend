@@ -13,6 +13,10 @@ const userSchema =   mongoose.Schema({
     name : String,
     age : Number , 
     email : String , 
+    profilePic: {
+      type : String,
+      default : "image.png"
+    },
     password : String,
   posts: [{ // stores postid's ki user k pass kon kon si posts hai
   type: mongoose.Schema.Types.ObjectId,
