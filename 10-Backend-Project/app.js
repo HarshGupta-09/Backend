@@ -99,6 +99,31 @@ res.redirect('/profile')
   
 
 })
+
+app.get("/like/:id",isLoggedIn,async(req,res)=>{
+  let post = await postModel.findOne({_id : req.params.id}).populate("user")
+  if(post.likes.indexOf(req.user.userId) === -1){
+      post.likes.push(req.user.userId);
+  }else{
+    post.likes.splice(post.likes.indexOf(req.user.userId) ,1);
+  }
+
+
+  await post.save()
+  res.redirect("/profile")
+})
+app.get("/edit/:id",isLoggedIn,async(req,res)=>{
+  let post = await postModel.findOne({_id : req.params.id}).populate("user")
+
+
+
+  await post.save()
+  res.redirect("/profile")
+})
+
+
+
+
 function isLoggedIn(req,res,next){
   if(!req.cookies.token){
   

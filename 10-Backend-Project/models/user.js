@@ -14,7 +14,7 @@ const userSchema =   mongoose.Schema({
     age : Number , 
     email : String , 
     password : String,
-  posts: [{
+  posts: [{ // stores postid's ki user k pass kon kon si posts hai
   type: mongoose.Schema.Types.ObjectId,
   ref: "post"
 }]

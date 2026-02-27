@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 
 const postSchema =   mongoose.Schema({
-   user : {
+   user : { // ye particular post kis user ki hai uski id stored hai
     type : mongoose.Schema.Types.ObjectId,
     ref : "user"
    } ,
